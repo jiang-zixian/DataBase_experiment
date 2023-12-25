@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form_studentInformation(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(1109, 528)
+        Form.resize(1109, 593)
         self.textEdit_2 = QtWidgets.QTextEdit(Form)
         self.textEdit_2.setGeometry(QtCore.QRect(340, 30, 91, 41))
         font = QtGui.QFont()
@@ -152,6 +152,9 @@ class Ui_Form_studentInformation(object):
         self.tableWidget.setHorizontalHeaderItem(6, item)
         self.tableWidget.horizontalHeader().setDefaultSectionSize(148)
         self.tableWidget.horizontalHeader().setMinimumSectionSize(24)
+        self.pushButton = QtWidgets.QPushButton(Form)
+        self.pushButton.setGeometry(QtCore.QRect(970, 540, 101, 41))
+        self.pushButton.setObjectName("pushButton")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -223,3 +226,4 @@ class Ui_Form_studentInformation(object):
         item.setText(_translate("Form", "学分"))
         item = self.tableWidget.horizontalHeaderItem(6)
         item.setText(_translate("Form", "学时"))
+        self.pushButton.setText(_translate("Form", "退出"))

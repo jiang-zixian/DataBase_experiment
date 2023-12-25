@@ -137,8 +137,8 @@ where sx.sno=student.sno and
 	sy.sno=student.sno and
 	sx.grade is not null and
 		sy.grade is not null and 
-        sx.cno<>sy.cno;
-
+        sx.cno<>sy.cno
+group by sx.sno;
 
 
 
@@ -237,16 +237,20 @@ SELECT teacher.tno,tname,tsex,tphone,dname,profess
                 WHERE teacher.dmpno=department.dmpno AND teacher.tno='123110';
 	
 	
+SELECT department.dmpno, dname, teacher.tno, tname FROM department,teacher WHERE department.tno=teacher.tno;
 
 
-
-
+SELECT sno,sname,ssex,sage,dname,intime,password
+                FROM student,account,department
+                WHERE student.dmpno=department.dmpno AND student.sno=account.usrno;
 
 
 
 
 	
-    
+SELECT teacher.tno,tname,tsex,tphone,dname,profess,password
+                FROM teacher,account,department
+                WHERE teacher.dmpno=department.dmpno AND teacher.tno=account.usrno;
 
     
 

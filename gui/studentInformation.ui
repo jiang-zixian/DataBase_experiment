@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1109</width>
-    <height>528</height>
+    <height>593</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -413,6 +413,19 @@ p, li { white-space: pre-wrap; }
      <string>学时</string>
     </property>
    </column>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>970</x>
+     <y>540</y>
+     <width>101</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>退出</string>
+   </property>
   </widget>
  </widget>
  <resources/>

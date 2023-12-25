@@ -5,7 +5,7 @@
 # 更改学生成绩',
 # 删除学生成绩',
 
-
+from gui.globalFunction import *
 # 获取教师基本信息和所教课程
 def teacher_Information(connect,tno):
     # 查找教师号为tno的教师的基本信息
@@ -73,6 +73,27 @@ def teacher_addGrade(connect,sno,cno,grade):
     print(sno)
     print(cno)
     print(grade)
+    # 检查学号是否存在
+    query = f"""SELECT * FROM student WHERE sno='{sno}'"""
+    # 执行查询
+    cursor.execute(query)
+    # 获取结果
+    result = cursor.fetchall()
+    print(result)
+    if not result:
+        show_msg_box("错误","该学号不存在")
+        return
+
+    # 检查是否已经录入过
+    query = f"""SELECT * FROM stu_course WHERE sno='{sno}' AND cno='{cno}'"""
+    # 执行查询
+    cursor.execute(query)
+    # 获取结果
+    result = cursor.fetchall()
+    print(result)
+    if result:
+        show_msg_box("错误","已经录入过该学生在该门课的成绩了")
+        return
     # 找教师所教课程
     query = f"""INSERT INTO `stu_course` (`sno`, `cno`, `grade`) VALUES('{sno}', '{cno}', '{grade}')"""
     # 执行查询

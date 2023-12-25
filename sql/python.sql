@@ -21,7 +21,7 @@ CREATE TABLE `account` (#用户
 ) ENGINE=InnoDB DEFAULT CHARSET=gbk;
 
 INSERT INTO `account` (`usrno`,`usrtype`, `password`) VALUES
-('666770', '管理员','00000000'),
+('666770', '管理员','0'),
 ('666771', '管理员','00000000'),
 ('201632120710', '学生', 'password1'),
 ('201632120711', '学生', 'password2'),
@@ -98,7 +98,7 @@ INSERT INTO `teacher` (`tno`, `tname`, `tsex`, `tphone`, `dmpno`, `profess`) VAL
 ('123125', '马冬梅', '女', '17398449123', 'd004', '副教授');
 
 -- --------------------------------------------------------
-
+select * from teacher;
 -- `course`
 
 CREATE TABLE `course` (
@@ -153,7 +153,6 @@ INSERT INTO `stu_course` (`sno`, `cno`, `grade`) VALUES
 ('201632120778', 'c002', 80),
 ('201632120778', 'c003', 80),
 ('201632120778', 'c006', 80),
-('201632120778', 'c007', 90),
 ('201732120762', 'c002', 50),
 ('201732120768', 'c004', 70),
 ('201732120777', 'c001', NULL),
@@ -170,7 +169,6 @@ INSERT INTO `stu_course` (`sno`, `cno`, `grade`) VALUES
 ('202100000004', 'c007', 95),
 ('202100000005', 'c003', NULL);
 
-INSERT INTO `stu_course` (`sno`, `cno`, `grade`) VALUES('202100000001', 'c007', 89);
 
 -- --------------------------------------------------------
 

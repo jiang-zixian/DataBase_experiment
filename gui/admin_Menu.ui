@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>440</width>
-    <height>368</height>
+    <height>370</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,14 @@
     <rect>
      <x>50</x>
      <y>30</y>
-     <width>141</width>
-     <height>101</height>
+     <width>341</width>
+     <height>71</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>查询题库</string>
@@ -35,34 +40,13 @@
      <height>41</height>
     </rect>
    </property>
-   <property name="text">
-    <string>退出2</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_3">
-   <property name="geometry">
-    <rect>
-     <x>250</x>
-     <y>30</y>
-     <width>141</width>
-     <height>101</height>
-    </rect>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
    </property>
    <property name="text">
-    <string>查询题库3</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_4">
-   <property name="geometry">
-    <rect>
-     <x>250</x>
-     <y>160</y>
-     <width>141</width>
-     <height>101</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>查询题库4</string>
+    <string>退出</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_5">
@@ -70,12 +54,17 @@
     <rect>
      <x>50</x>
      <y>160</y>
-     <width>141</width>
-     <height>101</height>
+     <width>341</width>
+     <height>71</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
    <property name="text">
-    <string>查询题库5</string>
+    <string>表格增删改</string>
    </property>
   </widget>
  </widget>

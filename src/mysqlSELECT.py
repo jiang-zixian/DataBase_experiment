@@ -31,14 +31,14 @@ def query1_1(connect):
         print(f"序号: {student[0]},学号: {student[1]}, 姓名: {student[2]}，入学时间: {student[3]}")
     return table_str
 
-# 1.2排序原理：计算表里比当前学生入学晚且未成年的学生个数
+#1.2排序原理：计算表里比当前学生入学晚且未成年的学生个数
 def query1_2(connect):
     # 创建游标
     cursor = connect.cursor()
 
     # 查询未成年学生
     query = """
-            select 
+            select
                 (
                 select count(distinct intime)#表示计算 Score 列中不同值的数量，即去重后的分数种类数
                 from student
@@ -134,6 +134,8 @@ def query3(connect):
             student,stu_course
         WHERE
             student.sno=stu_course.sno AND
+            grade IS NOT NULL AND
+            grade<60 AND
             student.sno in (
                 SELECT sno
                 FROM stu_course,course
@@ -148,9 +150,16 @@ def query3(connect):
     # 获取结果
     result = cursor.fetchall()
 
-    # 打印结果
+    table_str = "不及格学生的学号姓名、对应课程的课程号、成绩分别是：\n"
+
+    # 构建表头
+    table_str += "{:<15} {:<15} {:<10} {:<20}\n".format("学号", "姓名", "课程号", "成绩")
+
+    # 构建数据行
     for row in result:
-        print(row)
+        table_str += "{:<15} {:<15} {:<10} {:<20}\n".format(str(row[0]), str(row[1]), str(row[2]), str(row[3]))
+
+    return table_str
 
 
 # 4.找出每个班级的课程号，任课老师姓名和平均分，按平均分降序排序
@@ -178,9 +187,16 @@ def query4(connect):
     # 获取结果
     result = cursor.fetchall()
 
-    # 打印结果
+    table_str = "每个班级的课程号、任课老师姓名和平均分为：\n"
+
+    # 构建表头
+    table_str += "{:<10} {:<15} {:<20}\n".format("课程号", "任课老师姓名", "平均分")
+
+    # 构建数据行
     for row in result:
-        print(row)
+        table_str += "{:<10} {:<15} {:<20}\n".format(str(row[0]), str(row[1]), str(row[2]))
+
+    return table_str
 
 
 # 5.哪个班级的平均分最高？找出这个班级的课程号，任课老师姓名和平均分
@@ -207,10 +223,10 @@ def query5(connect):
         WHERE
             teacher.tno=course.tno AND
             course.cno=stu_course.cno AND
-            grade IS NOT NULL #排除没有成绩的记录
-        group by course.cno
-        order by AVG(grade) desc #降序排序，取第一个，即为最高的平均分
-        limit 1)
+           grade IS NOT NULL
+        GROUP BY course.cno
+        ORDER BY AVG(grade) DESC
+        LIMIT 1)
     """
 
     # 执行查询
@@ -219,9 +235,16 @@ def query5(connect):
     # 获取结果
     result = cursor.fetchall()
 
-    # 打印结果
+    table_str = "平均分最高的课程的课程号、任课老师姓名和平均分为：\n"
+
+    # 构建表头
+    table_str += "{:<10} {:<15} {:<20}\n".format("课程号", "任课老师姓名", "平均分")
+
+    # 构建数据行
     for row in result:
-        print(row)
+        table_str += "{:<10} {:<15} {:<20}\n".format(str(row[0]), str(row[1]), str(row[2]))
+
+    return table_str
 
 
 # 6.查找平均分第三高的那个班级的课程号，任课老师姓名和平均分，用视图
@@ -232,7 +255,7 @@ def query6(connect):
 
     # 定义 SQL 查询
     query1 = """
-        CREATE VIEW avgGrade # 先找出每个班级的平均分
+        CREATE VIEW avgGrade
         AS 
             SELECT 
                 course.cno AS cno,tname AS tname,AVG(grade) AS average_grade
@@ -241,24 +264,24 @@ def query6(connect):
             WHERE
                 teacher.tno=course.tno AND
                 course.cno=stu_course.cno AND
-                grade IS NOT NULL #排除没有成绩的记录
-                group by course.cno;
+                grade IS NOT NULL
+                GROUP BY course.cno;
     """
 
     query2 = """
             SELECT *
             FROM
             avgGrade as ax
-            WHERE(select
+            WHERE(SELECT
             count(distinct
-            average_grade)  # 平均分去重
-            from avgGrade
-                where
+            average_grade)
+            FROM avgGrade
+                WHERE
             average_grade > ax.average_grade
-            )=2;  # 表里有两个班级平均分比自己高的班级
+            )=2;
     """
 
-    query3="""DROP VIEW avgGrade;"""
+    query3 = """DROP VIEW avgGrade;"""
 
     # 执行查询
     cursor.execute(query1)
@@ -266,13 +289,21 @@ def query6(connect):
     result = cursor.fetchall()
     cursor.execute(query3)
 
-    # 打印结果
+    table_str = "平均分第三高的班级的课程号、任课老师姓名和平均分为：\n"
+
+    # 构建表头
+    table_str += "{:<10} {:<15} {:<20}\n".format("课程号", "任课老师姓名", "平均分")
+
+    # 构建数据行
     for row in result:
-        print(row)
+        table_str += "{:<10} {:<15} {:<20}\n".format(str(row[0]), str(row[1]), str(row[2]))
+
+    return table_str
 
 
 # 7.有两门及以上的课有有效成绩的同学的学号姓名
 # 7.1用group+having
+
 def query7_1(connect):
     # 创建游标
     cursor = connect.cursor()
@@ -283,9 +314,9 @@ def query7_1(connect):
                 sno,sname
             FROM
                 student
-            WHERE sno in(
-                select sno
-                from stu_course
+            WHERE sno IN (
+                SELECT sno
+                FROM stu_course
                 WHERE grade IS NOT NULL
                 GROUP BY sno
                 HAVING COUNT(DISTINCT cno) > 1
@@ -298,9 +329,17 @@ def query7_1(connect):
     # 获取结果
     result = cursor.fetchall()
 
-    # 打印结果
+    table_str = "有两门及以上的课有有效成绩的同学的学号姓名为：\n"
+
+    # 构建表头
+    table_str += "{:<10} {:<15}\n".format("学号", "姓名")
+
+    # 构建数据行
     for row in result:
-        print(row)
+        table_str += "{:<10} {:<15}\n".format(str(row[0]), str(row[1]))
+
+    return table_str
+
 # 7.2不用group+having
 def query7_2(connect):
     # 创建游标
@@ -309,12 +348,13 @@ def query7_2(connect):
     # 定义 SQL 查询
     query = """
         select sx.sno,sname
-        from stu_course as sx,stu_course as sy,student
-        where sx.sno=student.sno and
-            sy.sno=student.sno and
-            sx.grade is not null and
-                sy.grade is not null and 
-                sx.cno<>sy.cno;
+from stu_course as sx,stu_course as sy,student
+where sx.sno=student.sno and
+	sy.sno=student.sno and
+	sx.grade is not null and
+		sy.grade is not null and 
+        sx.cno<>sy.cno
+group by sx.sno;
     """
 
     # 执行查询
@@ -323,9 +363,16 @@ def query7_2(connect):
     # 获取结果
     result = cursor.fetchall()
 
-    # 打印结果
+    table_str = "有两门及以上的课有有效成绩的同学的学号姓名为：\n"
+
+    # 构建表头
+    table_str += "{:<10} {:<15}\n".format("学号", "姓名")
+
+    # 构建数据行
     for row in result:
-        print(row)
+        table_str += "{:<10} {:<15}\n".format(str(row[0]), str(row[1]))
+
+    return table_str
 
 
 # 8.查找所属学院院长为马冬梅或韩宏的、所有师生的学号/工号和姓名 使用UNION
@@ -371,9 +418,14 @@ def query8(connect):
     # 获取结果
     result = cursor.fetchall()
 
-    # 打印结果
+    # 构建字符串
+    result_str = "所属学院院长为马冬梅或韩宏的师生的学号和姓名为：\n"
+
+    # 构建数据行
     for row in result:
-        print(row)
+        result_str += "学号: {}, 姓名: {}\n".format(row[0], row[1])
+
+    return result_str
 
 
 # 9.查询只有一个学生的课程号
@@ -399,9 +451,14 @@ def query9(connect):
     # 获取结果
     result = cursor.fetchall()
 
-    # 打印结果
+    # 构建字符串
+    result_str = "只有一个学生的课程号为：\n"
+
+    # 构建数据行
     for row in result:
-        print(row)
+        result_str += "{}\n".format(row[0])
+
+    return result_str
 
 # 10.查询选修了所有课程的学生的学号姓名
 # 10.1 找选修课程数等于课程数目的学生
@@ -431,9 +488,14 @@ def query10_1(connect):
     # 获取结果
     result = cursor.fetchall()
 
-    # 打印结果
+    # 构建字符串
+    result_str = "选修了所有课程的学生的学号和姓名为：\n"
+
+    # 构建数据行
     for row in result:
-        print(row)
+        result_str += "学号: {}, 姓名: {}\n".format(row[0], row[1])
+
+    return result_str
 
 # 10.2 查询没有一门课没被该生选择的学生的学号姓名
 def query10_2(connect):
@@ -462,9 +524,14 @@ def query10_2(connect):
     # 获取结果
     result = cursor.fetchall()
 
-    # 打印结果
+    # 构建字符串
+    result_str = "没有一门课没被选择的学生的学号和姓名为：\n"
+
+    # 构建数据行
     for row in result:
-        print(row)
+        result_str += "学号: {}, 姓名: {}\n".format(row[0], row[1])
+
+    return result_str
 
 
 # 11.查询所有课程成绩的最高分、最低分、平均分。成绩不全的课程不参与统计，最终结果按平均分降序排列
@@ -478,11 +545,11 @@ def query11(connect):
         from stu_course
         where grade is not null
         group by cno
-        having cno not in(# 找出有成绩不全的班级
+        having cno not in(
             select cno 
             from stu_course
             where grade is null
-            )
+        )
         order by avg_grade desc;
     """
 
@@ -492,9 +559,17 @@ def query11(connect):
     # 获取结果
     result = cursor.fetchall()
 
-    # 打印结果
+    # 构建字符串
+    result_str = "课程成绩的最高分、最低分、平均分为：\n"
+
+    # 构建表头
+    result_str += "{:<10} {:<10} {:<10} {:<10}\n".format("课程号", "最高分", "最低分", "平均分")
+
+    # 构建数据行
     for row in result:
-        print(row)
+        result_str += "{:<10} {:<10} {:<10} {:<10}\n".format(row[0], row[1], row[2], row[3])
+
+    return result_str
 
 codes = []
 codes.append("""# 1.1ROW_NUMBER() 
@@ -524,11 +599,13 @@ codes.append(""""# 有嵌套，但总体算连接
 SELECT student.sno,sname,cno,grade
 FROM student,stu_course
 WHERE student.sno=stu_course.sno AND
-	student.sno in (
-		SELECT sno
+    grade IS NOT NULL AND
+    grade<60 AND
+    student.sno in (
+        SELECT sno
         FROM stu_course,course
         WHERE stu_course.cno=course.cno AND grade<60
-    );
+)
 """)
 
 codes.append("""SELECT course.cno,tname,AVG(grade) AS average_grade
@@ -594,7 +671,8 @@ where sx.sno=student.sno and
 	sy.sno=student.sno and
 	sx.grade is not null and
 		sy.grade is not null and 
-        sx.cno<>sy.cno;
+        sx.cno<>sy.cno
+group by sx.sno;
 """)
 
 codes.append("""# 嵌套查询和连接查询都可以写，这里写嵌套查询
@@ -695,7 +773,10 @@ def myselect(connect,num):
     elif num==6:
         result=query6(connect)
     elif num==7:
-        result=query7_1(connect)
+        result1=query7_1(connect)
+        result1+="\n\n\n"
+        result2=query7_2(connect)
+        result=result1+result2
     elif num==8:
         result=query8(connect)
     elif num==9:

@@ -15,7 +15,10 @@ def login(type,usrno,pwd):
 
     cursor.execute(query)
     result = cursor.fetchone()
-
+    print(type)
+    print(usrno)
+    print(pwd)
+    print(result)
     if result:
         # 找到用户，返回对应的类型
         if type == '管理员':
@@ -33,5 +36,5 @@ def login(type,usrno,pwd):
     else:
         print("没有该用户或密码错误")
         connect.close()
-        return 0
+        return [0,0]
 
